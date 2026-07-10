@@ -1,0 +1,455 @@
+openapi: 3.0.0
+info:
+  title: Another Home API
+  description: The comprehensive microservices API documentation for the Another Home Hostel Management System.
+  version: 1.1.0
+tags:
+  - name: IAM
+    description: Identity and Access Management (Authentication Microservice).
+  - name: Accommodation
+    description: Room inventories and bed allocations (Accommodation Microservice).
+  - name: Operations
+    description: Maintenance, Visitors, and Notices (Operations Microservice).
+  - name: Finance
+    description: Fee tracking, invoicing, and payment processing.
+  - name: Notifications
+    description: In-app user alerts and system messages.
+
+paths:
+  # ==========================================
+  # 1. IAM (Authentication Microservice)
+  # ==========================================
+  /auth/login:
+    post:
+      tags:
+        - IAM
+      summary: Authenticate a user and receive a JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginDto"
+      responses:
+        "200":
+          description: Successful login.
+
+  /auth/register:
+    post:
+      tags:
+        - IAM
+      summary: Register a new student account (Pending approval)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterStudentDto"
+      responses:
+        "201":
+          description: Registration submitted successfully.
+
+  /auth/pending-approvals:
+    get:
+      tags:
+        - IAM
+      summary: List all pending student registrations (Warden view)
+      responses:
+        "200":
+          description: Returns an array of pending registrations.
+
+  /auth/approve/{registrationId}:
+    post:
+      tags:
+        - IAM
+      summary: Approve or reject a student registration (Warden view)
+      parameters:
+        - name: registrationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApprovalDto"
+      responses:
+        "200":
+          description: Registration status updated.
+
+  # ==========================================
+  # 2. ACCOMMODATION (Accommodation Microservice)
+  # ==========================================
+  /accommodation/rooms:
+    get:
+      tags:
+        - Accommodation
+      summary: Get all rooms and their current capacity
+      responses:
+        "200":
+          description: Returns an array of all rooms.
+    post:
+      tags:
+        - Accommodation
+      summary: Create a new hostel room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRoomDto"
+      responses:
+        "201":
+          description: Room created successfully.
+
+  /accommodation/allocations:
+    post:
+      tags:
+        - Accommodation
+      summary: Assign a student to a specific bed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AllocateBedDto"
+      responses:
+        "201":
+          description: Student successfully allocated.
+
+  # ==========================================
+  # 3. OPERATIONS (Operations Microservice)
+  # ==========================================
+  # --- Maintenance ---
+  /operations/incidents:
+    get:
+      tags:
+        - Operations
+      summary: View all logged maintenance incidents
+      responses:
+        "200":
+          description: Returns an array of incidents.
+    post:
+      tags:
+        - Operations
+      summary: Report a new maintenance issue (Student app)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReportIncidentDto"
+      responses:
+        "201":
+          description: Incident reported successfully.
+
+  /operations/incidents/{incidentId}/resolve:
+    patch:
+      tags:
+        - Operations
+      summary: Mark an incident as resolved (Warden view)
+      parameters:
+        - name: incidentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Incident resolved.
+
+  # --- Visitors ---
+  /operations/visitors:
+    get:
+      tags:
+        - Operations
+      summary: View visitor logs and pending requests
+      responses:
+        "200":
+          description: Returns an array of visitor requests.
+    post:
+      tags:
+        - Operations
+      summary: Request a visitor entry pass (Student app)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestVisitorDto"
+      responses:
+        "201":
+          description: Visitor request submitted.
+
+  /operations/visitors/{visitorId}/status:
+    patch:
+      tags:
+        - Operations
+      summary: Approve or reject a visitor entry (Warden view)
+      parameters:
+        - name: visitorId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApprovalDto"
+      responses:
+        "200":
+          description: Visitor status updated.
+
+  # --- Notices ---
+  /operations/notices:
+    get:
+      tags:
+        - Operations
+      summary: Get all published notices and announcements
+      responses:
+        "200":
+          description: Returns an array of notices.
+    post:
+      tags:
+        - Operations
+      summary: Publish a new notice (Warden view)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNoticeDto"
+      responses:
+        "201":
+          description: Notice published successfully.
+
+  # ==========================================
+  # 4. FINANCE
+  # ==========================================
+  /finance/invoices/{studentId}:
+    get:
+      tags:
+        - Finance
+      summary: Get all pending fee invoices for a student
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Returns an array of invoices.
+
+  /finance/payments:
+    post:
+      tags:
+        - Finance
+      summary: Submit a payment receipt for an invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitPaymentDto"
+      responses:
+        "201":
+          description: Payment logged.
+
+  # ==========================================
+  # 5. NOTIFICATIONS
+  # ==========================================
+  /notifications/{userId}:
+    get:
+      tags:
+        - Notifications
+      summary: Get all in-app notifications for a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Returns an array of notifications.
+
+  /notifications/{notificationId}/read:
+    patch:
+      tags:
+        - Notifications
+      summary: Mark a specific notification as read
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Notification marked as read.
+
+components:
+  schemas:
+    # --- Shared Schemas ---
+    ApprovalDto:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [APPROVED, REJECTED]
+        remarks:
+          type: string
+          example: "Verified details."
+
+    # --- IAM Schemas ---
+    LoginDto:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: student@university.lk
+        password:
+          type: string
+          format: password
+          example: "securepassword123"
+
+    RegisterStudentDto:
+      type: object
+      required:
+        - studentId
+        - fullName
+        - email
+        - password
+        - contactNumber
+      properties:
+        studentId:
+          type: string
+          example: STU-2023-045
+        fullName:
+          type: string
+          example: "U.G.I. Ranhiru"
+        email:
+          type: string
+          example: ranhiru@student.lk
+        password:
+          type: string
+          format: password
+          example: "strong123"
+        contactNumber:
+          type: string
+          example: "+94771234567"
+
+    # --- Accommodation Schemas ---
+    CreateRoomDto:
+      type: object
+      required:
+        - roomNumber
+        - capacity
+        - designation
+      properties:
+        roomNumber:
+          type: string
+          example: A-101
+        capacity:
+          type: integer
+          example: 4
+        designation:
+          type: string
+          enum: [Male, Female, Neutral]
+          example: Male
+
+    AllocateBedDto:
+      type: object
+      required:
+        - studentId
+        - bedId
+      properties:
+        studentId:
+          type: string
+          example: STU-2023-045
+        bedId:
+          type: string
+          example: BED-A101-01
+
+    # --- Operations Schemas ---
+    ReportIncidentDto:
+      type: object
+      required:
+        - category
+        - description
+        - roomId
+      properties:
+        category:
+          type: string
+          enum: [Plumbing, Electrical, Furniture, Other]
+          example: Electrical
+        description:
+          type: string
+          example: "Ceiling fan making noise."
+        roomId:
+          type: string
+          example: A-101
+
+    RequestVisitorDto:
+      type: object
+      required:
+        - studentId
+        - visitorName
+        - relation
+        - expectedDate
+      properties:
+        studentId:
+          type: string
+          example: STU-2023-045
+        visitorName:
+          type: string
+          example: "Kamal Perera"
+        relation:
+          type: string
+          example: "Father"
+        expectedDate:
+          type: string
+          format: date
+          example: "2026-07-15"
+
+    CreateNoticeDto:
+      type: object
+      required:
+        - title
+        - content
+      properties:
+        title:
+          type: string
+          example: "Water Cut Notice"
+        content:
+          type: string
+          example: "Water supply will be interrupted tomorrow from 10 AM to 2 PM."
+
+    # --- Finance Schemas ---
+    SubmitPaymentDto:
+      type: object
+      required:
+        - invoiceId
+        - amountPaid
+        - referenceNumber
+      properties:
+        invoiceId:
+          type: string
+          example: INV-2026-08
+        amountPaid:
+          type: number
+          format: float
+          example: 2500.00
+        referenceNumber:
+          type: string
+          example: "BK-TRANSFER-99281"
