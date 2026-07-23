@@ -1,17 +1,23 @@
 import { Module } from '@nestjs/common';
-// Adjust this path if your accommodation module is inside the infrastructure folder
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RoomOrmEntity } from './accommodation/infrastructure/database/entities/room.orm-entity';
 import { AccommodationModule } from './accommodation/accommodation.module';
 
 @Module({
     imports: [
-        // This tells NestJS to load all your Accommodation controllers and services
+        // Configure the global database connection
+        TypeOrmModule.forRoot({
+            type: 'mysql',
+            host: 'localhost',
+            port: 3306,
+            username: 'root',
+            password: 'root',
+            database: 'another_home',
+            entities: [RoomOrmEntity], // Add any new ORM entities here
+            synchronize: true,         // MAGIC: Automatically builds the SQL tables for you based on the entities (Keep this true for dev, false for prod)
+        }),
         AccommodationModule,
-
-        // In the future, you will add your other bounded contexts here:
-        // IamModule,
-        // FinanceModule,
     ],
-    controllers: [],
-    providers: [],
+
 })
 export class AppModule { }

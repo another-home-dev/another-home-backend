@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IRoomRepository } from '../../../domain/ports/room.repository.interface';
-import { Room } from '../../../domain/entities/Room.entity';
+import { Room } from '../../../domain/entities/Room';
 import { RoomOrmEntity } from '../entities/room.orm-entity';
 import { RoomMapper } from '../mappers/room.mapper';
 
@@ -37,5 +37,10 @@ export class RoomRepository implements IRoomRepository {
         if (!ormEntity) return null;
 
         return RoomMapper.toDomain(ormEntity);
+    }
+
+    async findAll(): Promise<Room[]> {
+        const ormEntities = await this.typeOrmRepository.find();
+        return ormEntities.map(entity => RoomMapper.toDomain(entity));
     }
 }

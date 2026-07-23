@@ -1,4 +1,4 @@
-import { Room } from '../../../domain/entities/Room.entity';
+import { Room } from '../../../domain/entities/Room';
 import { RoomOrmEntity } from '../entities/room.orm-entity';
 
 export class RoomMapper {
