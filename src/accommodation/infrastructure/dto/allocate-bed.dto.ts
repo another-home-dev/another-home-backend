@@ -1,15 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class AllocateBedDto {
-    @ApiProperty({
-        example: 'STU-2023-045',
-        description: 'The unique Student ID being allocated'
-    })
-    studentId: string;
-
-    @ApiProperty({
-        example: 'BED-A101-01',
-        description: 'The exact ID of the bed being assigned'
-    })
+    @ApiProperty({ description: 'The unique ID of the bed' })
+    @IsString()
+    @IsNotEmpty()
     bedId: string;
+
+    @ApiProperty({ description: 'The ID of the student being assigned to the bed' })
+    @IsString()
+    @IsNotEmpty()
+    studentId: string;
 }
