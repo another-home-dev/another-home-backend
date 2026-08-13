@@ -1,13 +1,15 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateRoomDto } from '../dto/create-room.dto';
 import { AllocateBedDto } from '../dto/allocate-bed.dto';
 import { CreateRoomUseCase } from '../../application/use-cases/create-room.usecase';
 import { GetAllRoomsUseCase } from '../../application/use-cases/get-all-rooms.usecase';
 import { AllocateBedUseCase } from '../../application/use-cases/allocate-bed.usecase';
 import { GetAllAllocationsUseCase } from '../../application/use-cases/get-all-allocations.usecase';
+import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 
 @ApiTags('Accommodation')
+@ApiBearerAuth()
 @Controller('accommodation')
 export class AccommodationController {
 
@@ -33,6 +35,7 @@ export class AccommodationController {
         };
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('rooms')
     @ApiOperation({ summary: 'Get all rooms and their current capacity' })
     @ApiResponse({ status: 200, description: 'Returns an array of all rooms.' })

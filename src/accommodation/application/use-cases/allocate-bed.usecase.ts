@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, Inject } from '@nestjs/common';
 import { BED_REPOSITORY } from '../../domain/ports/bed.repository.interface';
 import type { IBedRepository } from '../../domain/ports/bed.repository.interface';
-import { AllocateBedDto } from '../dto/allocate-bed.dto';
+import { AllocateBedDto } from '../../infrastructure/dto/allocate-bed.dto';
 
 @Injectable()
 export class AllocateBedUseCase {
