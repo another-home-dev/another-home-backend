@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, Inject } from '@nestjs/common';
+import { Injectable, BadRequestException, Inject, ConflictException } from '@nestjs/common';
 import { BED_REPOSITORY } from '../../domain/ports/bed.repository.interface';
 import type { IBedRepository } from '../../domain/ports/bed.repository.interface';
 import { AllocateBedDto } from '../../infrastructure/dto/allocate-bed.dto';
@@ -27,9 +27,12 @@ export class AllocateBedUseCase {
         // 3. Allocate the student (Using the pure Domain Entity method)
         bed.allocateStudent(dto.studentId);
 
-        // 4. Save the updated bed state back to MySQL
-        const updatedBed = await this.bedRepository.save(bed);
-
-        return updatedBed;
+        // 4. Save the updated bed state back to MySQL (handling database level atomicity checks)
+        try {
+            const updatedBed = await this.bedRepository.save(bed);
+            return updatedBed;
+        } catch (error) {
+            throw new ConflictException(error.message || 'Allocation failed: Double-booking detected.');
+        }
     }
 }
