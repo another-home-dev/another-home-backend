@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
+import { BedOrmEntity } from './bed.orm-entity';
 
 @Entity('rooms')
 export class RoomOrmEntity {
@@ -25,6 +26,9 @@ export class RoomOrmEntity {
 
     @Column({ type: 'int' })
     floor: number;
+
+    @OneToMany(() => BedOrmEntity, (bed) => bed.room)
+    beds: BedOrmEntity[];
 
     // --- Technical Metadata (Only lives in the database) ---
 

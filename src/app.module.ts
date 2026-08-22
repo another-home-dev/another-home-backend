@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RoomOrmEntity } from './accommodation/infrastructure/database/entities/room.orm-entity';
-import { AccommodationModule } from './accommodation/accommodation.module';
-import { AuthModule } from './auth/auth.module';
+import { RoomOrmEntity } from './infrastructure/database/entities/room.orm-entity';
+import { BedOrmEntity } from './infrastructure/database/entities/bed.orm-entity';
+import { AccommodationModule } from './accommodation.module';
 
 @Module({
     imports: [
@@ -14,10 +14,9 @@ import { AuthModule } from './auth/auth.module';
             username: 'root',
             password: 'ishakya0809',
             database: 'another_home',
-            entities: [RoomOrmEntity], // Add any new ORM entities here
+            entities: [RoomOrmEntity, BedOrmEntity], // Add any new ORM entities here
             synchronize: true,         // MAGIC: Automatically builds the SQL tables for you based on the entities (Keep this true for dev, false for prod)
         }),
-        AuthModule,
         AccommodationModule,
     ],
 

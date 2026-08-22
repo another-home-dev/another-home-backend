@@ -11,6 +11,7 @@ import { AllocateBedUseCase } from './application/use-cases/allocate-bed.usecase
 import { GetAllAllocationsUseCase } from './application/use-cases/get-all-allocations.usecase';
 import { BED_REPOSITORY } from './domain/ports/bed.repository.interface';
 import { BedRepository } from './infrastructure/database/repositories/bed.repository';
+import { CreateBedUseCase } from './application/use-cases/create-bed.usecase';
 
 @Module({
     // 1. Crucial: This tells NestJS and TypeORM to generate/manage the tables for this module
@@ -25,6 +26,7 @@ import { BedRepository } from './infrastructure/database/repositories/bed.reposi
         GetAllRoomsUseCase,
         AllocateBedUseCase,
         GetAllAllocationsUseCase,
+        CreateBedUseCase,
         {
             provide: ROOM_REPOSITORY,
             useClass: RoomRepository

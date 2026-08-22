@@ -15,9 +15,33 @@ export class BedRepository implements IBedRepository {
 
     async save(bed: Bed): Promise<Bed> {
         const ormEntity = BedMapper.toPersistence(bed);
+        
+        // If the bed is being occupied, perform an atomic update check
+        if (bed.isOccupied) {
+            // First check if the student is already assigned somewhere else
+            if (bed.studentId) {
+                const alreadyAssigned = await this.typeOrmRepository.findOne({
+                    where: { studentId: bed.studentId }
+                });
+                if (alreadyAssigned && alreadyAssigned.bedId !== bed.id) {
+                    throw new Error(`Student ${bed.studentId} is already assigned to bed ${alreadyAssigned.bedId}.`);
+                }
+            }
+
+            const result = await this.typeOrmRepository.update(
+                { bedId: bed.id, isOccupied: false },
+                ormEntity
+            );
+            if (result.affected === 0) {
+                throw new Error('This bed is already occupied.');
+            }
+            return bed;
+        }
+
         const savedEntity = await this.typeOrmRepository.save(ormEntity);
         return BedMapper.toDomain(savedEntity);
     }
+
 
     async findById(id: string): Promise<Bed | null> {
         const ormEntity = await this.typeOrmRepository.findOne({ where: { bedId: id } });
