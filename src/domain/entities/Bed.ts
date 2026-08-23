@@ -4,7 +4,8 @@ export class Bed {
         public readonly roomId: string,
         public isOccupied: boolean,
         public studentId: string | null = null,
-        public readonly bedNumber?: string
+        public readonly bedNumber?: string,
+        public allocatedAt: Date | null = null
     ) { }
 
     allocateStudent(studentId: string): void {
@@ -13,6 +14,7 @@ export class Bed {
         }
         this.isOccupied = true;
         this.studentId = studentId;
+        this.allocatedAt = new Date();
     }
 
 }

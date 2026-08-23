@@ -43,4 +43,8 @@ export class RoomRepository implements IRoomRepository {
         const ormEntities = await this.typeOrmRepository.find();
         return ormEntities.map(entity => RoomMapper.toDomain(entity));
     }
+
+    async delete(id: string): Promise<void> {
+        await this.typeOrmRepository.softDelete({ roomId: id });
+    }
 }

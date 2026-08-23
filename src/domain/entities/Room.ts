@@ -3,11 +3,12 @@ export class Room {
         public readonly roomId: string,
         public roomNumber: string,
         public capacity: number,
-        public gender: 'Male' | 'Female',
+        public gender: 'Male' | 'Female' | 'Neutral',
         public isAvailable: boolean,
         public airConditioning: 'AC' | 'Non-AC',
         public rentPerMonth: number,
-        public floor: number
+        public floor: number,
+        public buildingId: string | null = null
         // Notice: No createdAt, updatedAt, or isDeleted here!
     ) { }
 

@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { BedOrmEntity } from './bed.orm-entity';
+import { BuildingOrmEntity } from './building.orm-entity';
 
 @Entity('rooms')
 export class RoomOrmEntity {
@@ -12,8 +13,8 @@ export class RoomOrmEntity {
     @Column({ type: 'int' })
     capacity: number;
 
-    @Column({ type: 'enum', enum: ['Male', 'Female'] })
-    gender: 'Male' | 'Female';
+    @Column({ type: 'enum', enum: ['Male', 'Female', 'Neutral'] })
+    gender: 'Male' | 'Female' | 'Neutral';
 
     @Column({ type: 'boolean', default: true })
     isAvailable: boolean;
@@ -26,6 +27,13 @@ export class RoomOrmEntity {
 
     @Column({ type: 'int' })
     floor: number;
+
+    @Column({ type: 'varchar', nullable: true })
+    buildingId: string | null;
+
+    @ManyToOne(() => BuildingOrmEntity, (building) => building.rooms, { onDelete: 'SET NULL', nullable: true })
+    @JoinColumn({ name: 'buildingId' })
+    building: BuildingOrmEntity;
 
     @OneToMany(() => BedOrmEntity, (bed) => bed.room)
     beds: BedOrmEntity[];

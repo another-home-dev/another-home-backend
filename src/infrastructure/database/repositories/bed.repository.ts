@@ -53,4 +53,9 @@ export class BedRepository implements IBedRepository {
         const ormEntities = await this.typeOrmRepository.find({ where: { isOccupied: true } });
         return ormEntities.map(entity => BedMapper.toDomain(entity));
     }
+
+    async findByRoomId(roomId: string): Promise<Bed[]> {
+        const ormEntities = await this.typeOrmRepository.find({ where: { roomId } });
+        return ormEntities.map(entity => BedMapper.toDomain(entity));
+    }
 }

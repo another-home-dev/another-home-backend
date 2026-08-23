@@ -8,7 +8,8 @@ export class BedMapper {
             raw.roomId,
             raw.isOccupied,
             raw.studentId,
-            raw.bedNumber
+            raw.bedNumber,
+            raw.allocatedAt
         );
     }
 
@@ -19,6 +20,7 @@ export class BedMapper {
         ormEntity.isOccupied = domainBed.isOccupied;
         ormEntity.studentId = domainBed.studentId;
         ormEntity.bedNumber = domainBed.bedNumber || '';
+        ormEntity.allocatedAt = domainBed.allocatedAt;
         return ormEntity;
     }
 }

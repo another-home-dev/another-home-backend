@@ -8,4 +8,5 @@ export interface IRoomRepository {
     findById(id: string): Promise<Room | null>;
     findByRoomNumber(roomNumber: string): Promise<Room | null>;
     findAll(): Promise<Room[]>;
+    delete(id: string): Promise<void>;
 }

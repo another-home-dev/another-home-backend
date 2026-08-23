@@ -14,7 +14,8 @@ export class RoomMapper {
             raw.isAvailable,
             raw.airConditioning,
             raw.rentPerMonth,
-            raw.floor
+            raw.floor,
+            raw.buildingId
         );
     }
 
@@ -30,6 +31,7 @@ export class RoomMapper {
         ormEntity.airConditioning = domainRoom.airConditioning;
         ormEntity.rentPerMonth = domainRoom.rentPerMonth;
         ormEntity.floor = domainRoom.floor;
+        ormEntity.buildingId = domainRoom.buildingId;
 
         // TypeORM will automatically generate the createdAt/updatedAt timestamps 
         // when this object is handed to the save() function.
