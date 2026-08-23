@@ -6,4 +6,5 @@ export interface IBedRepository {
     findById(id: string): Promise<Bed | null>;
     save(bed: Bed): Promise<Bed>;
     findOccupiedBeds(): Promise<Bed[]>;
+    findByRoomId(roomId: string): Promise<Bed[]>;
 }

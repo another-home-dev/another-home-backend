@@ -16,6 +16,8 @@ export class BedOrmEntity {
     @Column({ type: 'varchar', nullable: true })
     studentId: string | null; // Will be null if the bed is empty
 
+    @Column({ type: 'timestamp', nullable: true })
+    allocatedAt: Date | null;
 
     @Column()
     roomId: string; // Foreign key mapping it back to the specific Room
